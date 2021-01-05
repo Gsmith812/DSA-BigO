@@ -173,16 +173,315 @@ If you are given 5 disks, how do the rods look like after 7 recursive calls?
 How many moves are needed to complete the puzzle with 3 disks? with 4 disks? with 5 disks?
 What is the runtime of your algorithm?
 
-*Solution* :
+*Solution* :  
+ - Algorithm:
+```
+const towerOfHanoi = (disks, sourceRod, destinationRod, bufferRod) => {
+    
+    // Verify that disks exist
+    if(disks >= 1) {
+        // Move one of the disks to a 'bufferRod' using the destinationRod
+        towerOfHanoi(disks - 1, sourceRod, bufferRod, destinationRod);
+
+        // Move the remaining disk to the 'destinationRod'
+        console.log('Move disk from rod', sourceRod, 'to rod', destinationRod);
+
+        // Move the disk from 'bufferRod' to the 'destinationRod' by using the 'sourceRod'
+        towerOfHanoi(disks - 1, bufferRod, destinationRod, sourceRod);
+    }
+    
+    return;
+}
+
+// Example Call
+towerOfHanoi(3, 'A', 'C', 'B');
 ```
 
+- If you are given 5 disks, how do the rods look like after 7 recursive calls?  
 ```
+Move disk from rod A to rod B
+Move disk from rod A to rod C
+Move disk from rod B to rod C
+Move disk from rod A to rod B
+Move disk from rod C to rod A
+Move disk from rod C to rod B
+Move disk from rod A to rod B
+
+Rod A	            Rod B	            Rod C
+---------------     ---- 
+-----------------   ---------
+                    -------------
+     	
+```
+* How many moves are needed to complete the puzzle with 3 disks? with 4 disks? with 5 disks?  
+    * 3 - 7 moves
+    * 4 - 15 moves
+    * 5 - 31 moves
+
+* What is the runtime of your algorithm?  
+O(2^n), because as the input is increased the runtime is increasing exponentially.
 ## 12. Iterative version
 Solve the drills 1 - 7 from your previous checkpoint (Recursion) iteratively.
+
+1. Counting Sheep  
+  
+Recursive:
+```
+const countingSheep = (count, array) => {
+    let lines = array || [];
+    //Base case
+    if (count <= 0) {
+        lines.push(`All sheep jumped over the fence`)
+        return lines.join('\n');
+    }
+    //General Case
+    lines.push(`${count}: Another sheep jumps over the fence`)
+    return countingSheep(--count, lines)
+    
+}
+```
+Iterative:
+```
+const countingSheep = count => {
+    let lines = [];
+    for (count; count > 0; count--) {
+        lines.push(`${count}: Another sheep jumps over the fence`)
+    }
+    lines.push(`All sheep jumped over the fence`)
+    return lines.join('\n');
+    
+}
+```
+2. Power Calculator 
+   
+Recursive:
+```
+const powerCalculator = (base, exponent) => {
+    //Invalid case
+    if(exponent < 0) {
+        return `exponent should be >= 0`
+    }
+    //If exponent is equal to 0
+    if(exponent === 0) {
+        return 1
+    }
+
+    //Base Case
+    if(exponent === 1) {
+        return base
+    }
+
+    //General Case
+    return base * powerCalculator(base, --exponent)
+}
+```
+Iterative:
+```
+const powerCalculator = (base, exponent) => {
+    if(exponent < 0) {
+        return `exponent should be >= 0`
+    }
+    if(exponent === 0) {
+        return 1
+    }
+
+    if(exponent === 1) {
+        return base
+    }
+    let result = base
+    for(let i = 2; i <= exponent; i++) {
+        result*=base
+    }
+    return result
+}
+```
+3. Reverse String 
+   
+Recursive:
+```
+const reverseString = string => {
+    if(string === '') return '';
+    return reverseString(string.substr(1)) + string.charAt(0);
+}
+```
+Iterative:
+```
+const reverseString = string => {
+    let strArr = string.split('');
+    let returnStr = '';
+    for(let i = strArr.length -1; i >= 0; i--) {
+        returnStr += strArr[i];
+    }
+    return returnStr;
+}
+```
+4. nth Triangular Number  
+  
+Recursive:
+```
+const nthTriangularNum = (num) => {
+    //Invalid Case
+    if(num <= 0) {
+        return console.log(`Number must be a positive integer`);
+    }
+
+    //Base Case
+    if(num <= 1) {
+        return num;
+    }
+
+    //General Case
+    return num + nthTriangularNum(num - 1);
+}
+```
+Iterative:
+```
+const nthTriangularNum = (num) => {
+    if(num <= 0) {
+        return console.log(`Number must be a positive integer`);
+    }
+    let resultNum = 0;
+    for(let i = num; i > 0; i--) {
+        resultNum += i;
+    }
+    return resultNum;
+}
+```
+5. String Splitter  
+  
+Recursive:
+```
+const stringSplitter = (string, delimiter, arr) => {
+    let str = string.trim();
+    let words = arr || [];
+    let index = str.indexOf(delimiter);
+
+    //Base Case
+    if(index < 0) {
+        words.push(str);
+        return words;
+    }
+
+    //General Case
+    words.push(str.substr(0, index));
+    return stringSplitter(str.slice(index + 1), delimiter, words);
+}
+```
+Iterative:
+```
+const stringSplitter = (string, delimiter) => {
+    let str = string.trim();
+    let words = [];
+    let index = str.indexOf(delimiter);
+
+    if(index < 0) {
+        words.push(str);
+        return words;
+    }
+
+    while(index >= 0) {
+        words.push(str.substr(0, index + 1));
+        str = str.slice(index + 1);
+        index = str.indexOf(delimiter);
+    }
+    words.push(str);
+    return words;
+}
+```
+6. Fibonacci  
+  
+Recursive:
+```
+const fibonacci = (num, prevVal) => {
+    prevVal = prevVal || {}
+    //Base Case
+    if(prevVal[num]){
+        return prevVal[num];
+    }
+
+    if(num <= 0){
+        return 0;
+    }
+    if(num === 1) {
+        return 1;
+    }
+
+    //General Case
+
+    return prevVal[num] = fibonacci(num - 1, prevVal) + fibonacci(num - 2, prevVal);
+}
+```
+Iterative:
+```
+const fibonacci = (num) => {
+    result = [];
+    for(let i = 1; i <= num; i++) {
+        if(i === 1) {
+            result.push(0);
+        } 
+        else if(i === 2) {
+            result.push(1);
+        }
+        else {
+            result.push(result[i - 2] + result[i - 3]);
+        }
+    }
+    return result;
+}
+```
+7. Factorial  
+  
+Recursive:
+```
+const factorialNum = num => {
+// Base case
+if(num <= 1) {
+    return num;
+}
+
+//General Case
+return num * factorialNum(num - 1);
+}
+```
+Iterative:
+```
+const factorialNum = num => {
+if(num <= 1) {
+    return num
+}
+let result = num;
+for(let i = num - 1; i > 0; i--) {
+    result *= i;
+}
+return result;
+```
 
 ## 13. Recursive Big O
 Take your solutions from the recursive exercises that you completed in the previous checkpoint and identify the time complexities (big O) of each of them.
 
+*Solution* :  
+1. Counting Sheep - O(n)
+2. Power Calculator - O(n)
+3. Reverse String - O(n)
+4. nth Triangular Number - O(n)
+5. String Splitter - O(n)
+6. Fibonacci - O(n)
+7. Factorial - O(n)
+8. Find a way out of the maze - O(3^n)
+9. Find all of the ways out of the maze - O(3^n)
+10. Anagrams - O(n^2)
+11. Organization Chart - O(n^2)
+
+
 ## 14. Iterative Big O
 Take your solutions from the iterative exercises today and identify the time complexities (big O) of each of them.
+
+1. Counting Sheep - O(n)
+2. Power Calculator - O(n)
+3. Reverse String - O(n)
+4. nth Triangular Number - O(n)
+5. String Splitter - O(n)
+6. Fibonacci - O(n)
+7. Factorial - O(n)
+8. Tower of Hanoi - O(2^n)
 
